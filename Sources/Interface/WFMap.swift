@@ -9,28 +9,42 @@ import MapKit
 import Models
 import SwiftUI
 
+/// A Wayfinder map component that highlights the user's location and search results.
 public struct WFMap: View {
-	@Binding var cameraPosition: MapCameraPosition
-	@Binding var mapSelection: MKMapItem?
+        @Binding var cameraPosition: MapCameraPosition
+        @Binding var mapSelection: MKMapItem?
 
-	private let results: [SearchResult]
+        private let results: [SearchResult]
+        private let userLocation: CLLocationCoordinate2D?
 
-	public init(
-		cameraPosition: Binding<MapCameraPosition>,
-		mapSelection: Binding<MKMapItem?>,
-		results: [SearchResult]
-	) {
-		_cameraPosition = cameraPosition
-		_mapSelection = mapSelection
-		self.results = results
-	}
+        /// Creates a Wayfinder map component.
+        ///
+        /// - Parameters:
+        ///   - cameraPosition: Binding describing the current camera configuration.
+        ///   - mapSelection: Binding to the selected map item.
+        ///   - results: Search results to render on the map.
+        ///   - userLocation: The caller's resolved user coordinate. Provide a value to display
+        ///     the user's location annotation on the map.
+        public init(
+                cameraPosition: Binding<MapCameraPosition>,
+                mapSelection: Binding<MKMapItem?>,
+                results: [SearchResult],
+                userLocation: CLLocationCoordinate2D? = nil
+        ) {
+                _cameraPosition = cameraPosition
+                _mapSelection = mapSelection
+                self.results = results
+                self.userLocation = userLocation
+        }
 
-	public var body: some View {
-		Map(position: $cameraPosition, selection: $mapSelection) {
-			LocationAnnotation(coordinate: .init(latitude: 25.7602, longitude: -80.1959))
-			SearchResultContent(results: results)
-		}
-	}
+        public var body: some View {
+                Map(position: $cameraPosition, selection: $mapSelection) {
+                        if let userLocation {
+                                LocationAnnotation(coordinate: userLocation)
+                        }
+                        SearchResultContent(results: results)
+                }
+        }
 }
 
 private extension MKCoordinateRegion {
@@ -41,11 +55,12 @@ private extension MKCoordinateRegion {
 }
 
 #Preview {
-	WFMap(
-		cameraPosition: .constant(.region(.previewRegion)),
-		mapSelection: .constant(nil),
-		results: [],
-	)
+        WFMap(
+                cameraPosition: .constant(.region(.previewRegion)),
+                mapSelection: .constant(nil),
+                results: [],
+                userLocation: .init(latitude: 25.7602, longitude: -80.1959)
+        )
 }
 
 
