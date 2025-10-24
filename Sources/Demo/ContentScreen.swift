@@ -10,29 +10,52 @@ import MapKit
 import Models
 import SwiftUI
 
-extension CLLocationCoordinate2D {
-	static var userLocation: CLLocationCoordinate2D {
-		.init(latitude: 33.7490, longitude: -84.3880) // ATL hoe
-	}
-}
-
 extension MKCoordinateRegion {
-	static var userRegion: MKCoordinateRegion {
-		.init(
-			center: .userLocation,
-			latitudinalMeters: 10_000,
-			longitudinalMeters: 10_000
+	enum RegionRange {
+		case close
+		case standard
+		case far
+
+		var distance: CLLocationDistance {
+			switch self {
+			case .close:    500
+			case .standard: 10_000
+			case .far:      20_000
+			}
+		}
+	}
+
+	static func region(
+		for location: CLLocationCoordinate2D,
+		range: RegionRange = .standard
+	) -> MKCoordinateRegion {
+		MKCoordinateRegion(
+			center: location,
+			latitudinalMeters: range.distance,
+			longitudinalMeters: range.distance
 		)
 	}
 }
 
 @MainActor
+/// Demonstrates how to provide a resolved user coordinate when presenting `WFMap`.
 struct ContentScreen {
-	@State private var cameraPosition: MapCameraPosition = .region(.userRegion)
+	private let location: CLLocationCoordinate2D
+	private let region: MKCoordinateRegion
+
+	@State private var cameraPosition: MapCameraPosition
 	@State private var searchText: String = ""
 	@State private var results: [SearchResult] = []
 	@State private var mapSelection: MKMapItem?
 	@State private var isSheePresented: Bool = false
+
+	init(location: CLLocationCoordinate2D) {
+		let region = MKCoordinateRegion.region(for: location)
+
+		self.location = location
+		self.region = region
+		_cameraPosition = State(initialValue: .region(region))
+	}
 
 	private func locationDetailSheet() -> some View {
 		LocationDetails(
@@ -64,7 +87,7 @@ struct ContentScreen {
 		Task {
 			let request = MKLocalSearch.Request()
 			request.naturalLanguageQuery = searchText
-			request.region = .userRegion
+			request.region = region
 
 			let response = try? await MKLocalSearch(request: request).start()
 			results = (response?.mapItems ?? []).map { SearchResult(item: $0) }
@@ -82,7 +105,8 @@ extension ContentScreen: View {
 		WFMap(
 			cameraPosition: $cameraPosition,
 			mapSelection: $mapSelection,
-			results: results
+			results: results,
+			location: location
 		)
 		.safeAreaInset(edge: .bottom, content: searchField)
 		.onChange(of: mapSelection, mapSelectionDidChange)
@@ -93,5 +117,5 @@ extension ContentScreen: View {
 }
 
 #Preview {
-	ContentScreen()
+	ContentScreen(location: .init(latitude: 33.7490, longitude: -84.3880))
 }
