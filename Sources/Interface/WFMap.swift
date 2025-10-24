@@ -39,10 +39,14 @@ public struct WFMap: View {
 
 	public var body: some View {
 		Map(position: $cameraPosition, selection: $mapSelection) {
-			if let userLocation {
-				LocationAnnotation(coordinate: userLocation)
-			}
+			annotation
 			SearchResultContent(results: results)
+		}
+	}
+
+	private var annotation: some MapContent {
+		userLocation.map { coordinate in
+			LocationAnnotation(coordinate: coordinate)
 		}
 	}
 }
