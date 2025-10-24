@@ -1,28 +1,35 @@
+# macOS
+.DS_Store
 
-  .DS_Store
-  DerivedData/
-  build/
-  *.pbxuser
-  *.mode1v3
-  *.mode2v3
-  *.perspectivev3
-  xcuserdata/
-  *.xcworkspace
-  !default.xcworkspace
-  *.moved-aside
-  *.xcuserstate
+# Build artifacts
+DerivedData/
+build/
 
-  # Swift Package Manager
-  .swiftpm/
+# Xcode project user data
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.moved-aside
+*.xcuserstate
+xcuserdata/
 
-  # CocoaPods
-  Pods/
+# Xcode workspaces
+*.xcworkspace
+!default.xcworkspace
 
-  # Carthage
-  Carthage/Build/
-  Carthage/Checkouts/
+# Swift Package Manager
+.swiftpm/
+.swiftpm/xcode/
+.swiftpm/xcode/package.xcworkspace/
+.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
+.swiftpm/xcode/package.xcworkspace/xcuserdata/
+.swiftpm/xcode/package.xcworkspace/xcshareddata/
+.swiftpm/xcode/package.xcworkspace/xcshareddata/xcschemes/
+.swiftpm/xcode/xcuserdata/
+.swiftpm/xcode/xcshareddata/
+.swiftpm/xcode/xcshareddata/xcschemes/
 
-  # Fastlane
-  fastlane/report.xml
-  fastlane/screenshots/
-  fastlane/test_output/
+# Misc
+*.xccheckout
+*.xcscmblueprint
