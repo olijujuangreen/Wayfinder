@@ -22,7 +22,6 @@ extension NavigationScreen: View {
 	}
 }
 
-// MARK: - Subviews
 private extension NavigationScreen {
 	@ViewBuilder
 	var mapView: some View {
