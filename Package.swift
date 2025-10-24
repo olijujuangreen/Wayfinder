@@ -26,6 +26,7 @@ private enum PackageProduct: CaseIterable {
 /// 2. Implement `title` and `dependencies`.
 /// 3. Add any resources or build settings as needed.
 private enum InternalTarget: CaseIterable {
+	case navigation
 	case demo
 	case interface
 	case models
@@ -35,6 +36,7 @@ private enum InternalTarget: CaseIterable {
 
 	var title: String {
 		switch self {
+		case .navigation: "Navigation"
 		case .demo: "Demo"
 		case .interface: "Interface"
 		case .models: "Models"
@@ -43,8 +45,9 @@ private enum InternalTarget: CaseIterable {
 
 	var dependencies: [Target.Dependency] {
 		switch self {
+		case .navigation: []
 		case .demo: targetDependencies(.target(.interface), .target(.models))
-		case .interface: targetDependencies(.target(.models))
+		case .interface: targetDependencies(.target(.models), .target(.navigation))
 		case .models: []
 		}
 	}
