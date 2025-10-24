@@ -52,7 +52,7 @@ extension LocationDetails: View {
 				.clipShape(.rect(cornerRadius: 8))
 				.padding()
 		} else {
-			ContentUnavailableView("No Preview available", image: "eye.slash")
+			ContentUnavailableView("No Preview Available", systemImage: "eye.slash")
 		}
 	}
 
